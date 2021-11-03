@@ -4,7 +4,47 @@ from openpyxl.styles import Font, Alignment
 import PySimpleGUI as sg
 import sys
 
-# 処理
+# 関数定義
+
+
+def del_val_line(ws, print_sheet_title, min_row, init_max_row, init_max_column):
+    # 値と罫線の削除
+    border_clear = Border(top=None, bottom=None, left=None, right=None)
+
+    if init_max_row > print_sheet_title:
+        for r in range(min_row, init_max_row+1):
+            ws.row_dimensions[r].height = 13.5  # ２行目以降の高さを13.5pointに設定
+            for col in range(1, init_max_column+1):
+                ws.cell(r, col).value = None
+                ws.cell(r, col).border = border_clear
+
+
+def disp_line(ws, print_sheet_title, print_end, col_max):
+
+    # 罫線の初期設定
+    side_hair = Side(style='hair', color='000000')
+    side_thin = Side(style='thin', color='000000')
+    border_hair = Border(top=side_hair, bottom=side_hair,
+                         left=side_hair, right=side_hair)
+    border = Border(top=side_thin, bottom=side_thin,
+                    left=side_hair, right=side_hair)
+
+    for r in range(print_sheet_title+1, print_end+1):
+        ws.row_dimensions[r].height = 22.5  # 行の高さ調節
+        for col in range(1, col_max):
+            ws.cell(row=r, column=col).border = border_hair
+
+    for r in range(print_sheet_title, print_sheet_title+1):
+        ws.row_dimensions[r].height = 24
+        for col in range(1, col_max):
+            ws.cell(row=r, column=col).border = border
+
+    for r in range(print_end, print_end+1):
+        for col in range(1, col_max):
+            ws.cell(row=r, column=col).border = border
+
+
+# 処理開始
 # 初期化処理
 # 入力データーの列番号の指定 見積内訳(入力)
 input_array = ("", 2, 3, 4, 5, 6, 8, 11)
@@ -54,14 +94,8 @@ initial_columns = int(ws2.max_column)
 minimum_row = OUT_PRINT_ST + 1
 
 # 値と罫線の削除
-border_clear = Border(top=None, bottom=None, left=None, right=None)
 
-if initial_rows > OUT_PRINT_ST:
-    for r in range(minimum_row, initial_rows+1):
-        ws2.row_dimensions[r].height = 13.5  # ２行目以降の高さを13.5pointに設定
-        for col in range(1, initial_columns+1):
-            ws2.cell(r, col).value = None
-            ws2.cell(r, col).border = border_clear
+del_val_line(ws2, OUT_PRINT_ST, minimum_row, initial_rows, initial_columns)
 
 # 縦見積 印刷用シートの初期化
 initial_rows = int(ws4.max_row)
@@ -69,13 +103,9 @@ initial_columns = int(ws4.max_column)
 minimum_row = OUT_PRINT_ST_TATE + 1
 
 # 値と罫線の削除
-border_clear = Border(top=None, bottom=None, left=None, right=None)
-if initial_rows > OUT_PRINT_ST_TATE:
-    for r in range(minimum_row, initial_rows+1):
-        ws4.row_dimensions[r].height = 13.5  # １２行目以降の高さを13.5pointに設定
-        for col in range(1, initial_columns+1):
-            ws4.cell(r, col).value = None
-            ws4.cell(r, col).border = border_clear
+
+del_val_line(ws4, OUT_PRINT_ST_TATE, minimum_row,
+             initial_rows, initial_columns)
 
 # ワークシートを入力シートへ移動
 # 印刷する最終行を入力
@@ -136,47 +166,18 @@ for i in range(2, 6):
     output_sheet_row = output_sheet_row + 1  # 諸経費のタイトルと金額を表示しない
 
 # 罫線の描画範囲を指定
-# 罫線の初期設定
-side_hair = Side(style='hair', color='000000')
-side_thin = Side(style='thin', color='000000')
-border_hair = Border(top=side_hair, bottom=side_hair,
-                     left=side_hair, right=side_hair)
-border = Border(top=side_thin, bottom=side_thin,
-                left=side_hair, right=side_hair)
 
 # 内訳見積
 print_end = out_data_cnt + OUT_PRINT_ST + 6
+col_max = 9
 
-for r in range(OUT_PRINT_ST+1, print_end+1):
-    ws2.row_dimensions[r].height = 22.5  # 行の高さ調節
-    for col in range(1, 9):
-        ws2.cell(row=r, column=col).border = border_hair
-
-for r in range(OUT_PRINT_ST, OUT_PRINT_ST+1):
-    ws2.row_dimensions[r].height = 24
-    for col in range(1, 9):
-        ws2.cell(row=r, column=col).border = border
-
-for r in range(print_end, print_end+1):
-    for col in range(1, 9):
-        ws2.cell(row=r, column=col).border = border
-
+disp_line(ws2, OUT_PRINT_ST, print_end, col_max)
 
 # 縦見積
 print_end = out_data_cnt + OUT_PRINT_ST_TATE + 6
+col_max = 7
 
-for r in range(OUT_PRINT_ST_TATE+1, print_end+1):
-    ws4.row_dimensions[r].height = 22.5  # 行の高さ調節
-    for col in range(1, 7):
-        ws4.cell(row=r, column=col).border = border_hair
-
-for r in range(OUT_PRINT_ST_TATE, OUT_PRINT_ST_TATE+1):
-    for col in range(1, 7):
-        ws4.cell(row=r, column=col).border = border
-
-for r in range(print_end, print_end+1):
-    for col in range(1, 7):
-        ws4.cell(row=r, column=col).border = border
+disp_line(ws4, OUT_PRINT_ST_TATE, print_end, col_max)
 
 # 表紙(印刷へ合計金額と消費税をコピペ
 font_sum = Font(name='MS　Pゴシック', size=28, bold=True, color='000000')
