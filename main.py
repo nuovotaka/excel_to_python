@@ -64,7 +64,7 @@ OUT_PRINT_ST = 1
 OUT_PRINT_ST_TATE = 11
 
 # ファイル名を指定して開く
-f = sg.popup_get_file('Excel ファイルを選択', file_types=(('Excel file', '*.xlsx')))
+f = sg.popup_get_file('Excel ファイルを選択', file_types=(('Excel file', '*.xlsx'),))
 
 if f == None or f == "":
     sg.popup('最初からやり直してください！')
