@@ -64,9 +64,18 @@ OUT_PRINT_ST = 1
 OUT_PRINT_ST_TATE = 11
 
 # ファイル名を指定して開く
-f = sg.popup_get_file('Excel ファイルを選択', file_types=(('Excel file', '*.xlsx'),))
+f = sg.popup_get_file('Excel ファイルを選択', file_types=(('Excel file', '*.xlsx')))
 
 if f == None or f == "":
+    sg.popup('最初からやり直してください！')
+    sys.exit()
+
+# 印刷する最終行を入力
+value = sg.popup_get_text('印刷させる最後の項目番号は何番ですか？', '印刷最終行入力')
+
+if not (value == None or value == ""):
+    out_data_cnt = int(value)
+else:
     sg.popup('最初からやり直してください！')
     sys.exit()
 
@@ -108,13 +117,6 @@ del_val_line(ws4, OUT_PRINT_ST_TATE, minimum_row,
              initial_rows, initial_columns)
 
 # ワークシートを入力シートへ移動
-# 印刷する最終行を入力
-value = sg.popup_get_text('印刷させる最後の項目番号は何番ですか？', '印刷最終行入力')
-
-if not (value == None or value == ""):
-    out_data_cnt = int(value)
-else:
-    out_data_cnt = 1
 
 # 内訳印刷シートへコピー
 # 入力シート ＝＞ 印刷シート へ値のコピー＆ペースト
