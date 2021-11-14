@@ -19,7 +19,7 @@ def del_val_line(ws, print_sheet_title, min_row, init_max_row, init_max_column):
                 ws.cell(r, col).border = border_clear
 
 
-def disp_line(ws, print_sheet_title, print_end, col_max):
+def dsp_line(ws, print_sheet_title, print_end, col_max):
 
     # 罫線の初期設定
     side_hair = Side(style='hair', color='000000')
@@ -95,7 +95,7 @@ ws3.protection.disable()
 ws4.protection.disable()
 
 # 片付け清掃、諸経費の表示の有無(フラグの初期化)
-disp_sw_flag = ws3.cell(row=1, column=10)  # J1
+dsp_sw_flag = ws3.cell(row=1, column=10)  # J1
 
 # 内訳印刷用シートの初期化
 initial_rows = int(ws2.max_row)
@@ -137,7 +137,7 @@ for r in range(1, out_data_cnt+1):
 output_sheet_row = out_data_cnt+OUT_PRINT_ST+3
 
 for i in range(2, 6):
-    if not (disp_sw_flag == 1 and i == 2):
+    if not (dsp_sw_flag == 1 and i == 2):
         ws2.cell(output_sheet_row, 2).value = out_sum_item[i]
         ws2.cell(output_sheet_row, 7).value = ws3.cell(i, 3).value
         ws2.cell(output_sheet_row, 7).number_format = "###,###,##0"
@@ -161,7 +161,7 @@ for r in range(1, out_data_cnt+1):
 output_sheet_row = out_data_cnt+OUT_PRINT_ST_TATE+3
 
 for i in range(2, 6):
-    if not (disp_sw_flag == 1 and i == 2):
+    if not (dsp_sw_flag == 1 and i == 2):
         ws4.cell(output_sheet_row, 1).value = out_sum_item[i]
         ws4.cell(output_sheet_row, 6).value = ws3.cell(i, 3).value
         ws4.cell(output_sheet_row, 6).number_format = "###,###,##0"
@@ -173,13 +173,13 @@ for i in range(2, 6):
 print_end = out_data_cnt + OUT_PRINT_ST + 6
 col_max = 9
 
-disp_line(ws2, OUT_PRINT_ST, print_end, col_max)
+dsp_line(ws2, OUT_PRINT_ST, print_end, col_max)
 
 # 縦見積
 print_end = out_data_cnt + OUT_PRINT_ST_TATE + 6
 col_max = 7
 
-disp_line(ws4, OUT_PRINT_ST_TATE, print_end, col_max)
+dsp_line(ws4, OUT_PRINT_ST_TATE, print_end, col_max)
 
 # 表紙(印刷へ合計金額と消費税をコピペ
 font_sum = Font(name='MS　Pゴシック', size=28, bold=True, color='000000')
