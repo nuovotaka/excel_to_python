@@ -75,6 +75,9 @@ value = sg.popup_get_text('印刷させる最後の項目番号は何番です�
 
 if not (value == None or value == ""):
     out_data_cnt = int(value)
+    if out_data_cnt < 1:
+        sg.popup('最初からやり直してください!')
+        sys.exit()
 else:
     sg.popup('最初からやり直してください！')
     sys.exit()
